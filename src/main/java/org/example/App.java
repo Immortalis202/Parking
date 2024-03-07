@@ -15,10 +15,13 @@ public class App {
             ServerSocket serverSocket = null;
             serverSocket = getServerSocket(portNumber);
             Socket clientSocket = null;
-            clientSocket = accept(serverSocket);
 
-            ClientHandler clientHandler = new ClientHandler(clientSocket);
-            clientHandler.handle();
+            while(true){
+                clientSocket = accept(serverSocket);
+
+                ClientHandler clientHandler = new ClientHandler(clientSocket);
+                clientHandler.handle();
+            }
 
         }
     }
