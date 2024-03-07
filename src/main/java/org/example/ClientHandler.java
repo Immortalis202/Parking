@@ -12,9 +12,11 @@ import java.net.Socket;
 
 public class ClientHandler {
 	Socket clientSocket = null;
+	ParkingManager parkingManager;
 
-	public ClientHandler(Socket clientSocket) {
+	public ClientHandler(Socket clientSocket, ParkingManager parkingManager) {
 		this.clientSocket = clientSocket;
+		this.parkingManager = parkingManager;
 	}
 
 	void handle(){
@@ -50,7 +52,11 @@ public class ClientHandler {
 			while ((s = in.readLine()) != null) {
 				//System.out.println(s);
 				Ticket ticket = getTicket(s);
-				out.println(ticket);
+				if(ticket != null) {
+					out.println(ticket);
+					parkingManager.add(ticket);
+					System.out.println(parkingManager.tickets.size());
+				}
 			}
 
 		} catch (IOException e) {
