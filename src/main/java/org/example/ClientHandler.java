@@ -55,7 +55,19 @@ public class ClientHandler {
 				if(ticket != null) {
 					out.println(ticket);
 					parkingManager.add(ticket);
-					System.out.println(parkingManager.tickets.size());
+					System.out.println("Posti occupati " + parkingManager.tickets.size());
+				}else{
+					String plate = getPlate(s);
+					if(plate != null){
+						Ticket foundTicket = parkingManager.findPlate(plate);
+						if(foundTicket != null){
+							out.println("Found at slot: " + foundTicket.slot);
+						}else{
+							out.println("Not found");
+						}
+					}else {
+						out.println("Not found");
+					}
 				}
 			}
 
@@ -71,10 +83,32 @@ public class ClientHandler {
 		try {
 			ticket = gson.fromJson(s, Ticket.class);
 			System.out.println(ticket);
+			if(ticket.plate == null){
+				return null;
+			}
 			return ticket;
 		} catch(JsonSyntaxException e) {
 			throw new RuntimeException(e);
+
 		}
+
+
+
+
+	}
+	private String getPlate(String s){
+		Gson gson = new Gson();
+		try{
+			FindCommand findCommand = gson.fromJson(s, FindCommand.class);
+			Ticket ticket = parkingManager.findPlate(findCommand.plateToFind);
+			if(ticket == null){
+				return null;
+			}
+			return ticket.plate;
+		}catch(JsonSyntaxException e){
+			throw new RuntimeException(e);
+		}
+
 
 
 	}

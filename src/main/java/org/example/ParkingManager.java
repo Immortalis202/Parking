@@ -11,5 +11,15 @@ public class ParkingManager {
 		}
 		this.tickets.add(ticket);
 	}
-
+	Ticket findPlate(String plate){
+		if(tickets == null){
+			return null;
+		}
+		 for(Ticket ticket : tickets){
+			if (ticket.plate.equals(plate)){
+				return ticket;
+			}
+		 }
+		 return null;
+	}
 }
