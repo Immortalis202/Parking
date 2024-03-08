@@ -7,7 +7,7 @@ import java.net.Socket;
 public class App {
 
     static int portNumber;
-    static private ParkingManager parkingManager = new ParkingManager();
+    static private GroceryManager groceryManager = new GroceryManager();
 
 
     public static void main(String[] args) throws IOException {
@@ -21,7 +21,7 @@ public class App {
             while(true){
                 clientSocket = accept(serverSocket);
 
-                ClientHandler clientHandler = new ClientHandler(clientSocket, parkingManager);
+                ClientHandler clientHandler = new ClientHandler(clientSocket, groceryManager);
                 clientHandler.handle();
             }
 

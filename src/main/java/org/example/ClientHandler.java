@@ -12,11 +12,11 @@ import java.net.Socket;
 
 public class ClientHandler {
 	Socket clientSocket = null;
-	ParkingManager parkingManager;
+	GroceryManager groceryManager;
 
-	public ClientHandler(Socket clientSocket, ParkingManager parkingManager) {
+	public ClientHandler(Socket clientSocket, GroceryManager groceryManager) {
 		this.clientSocket = clientSocket;
-		this.parkingManager = parkingManager;
+		this.groceryManager = groceryManager;
 	}
 
 	void handle(){
@@ -51,17 +51,17 @@ public class ClientHandler {
 		try {
 			while ((s = in.readLine()) != null) {
 				//System.out.println(s);
-				Ticket ticket = getTicket(s);
-				if(ticket != null) {
-					out.println(ticket);
-					parkingManager.add(ticket);
-					System.out.println("Posti occupati " + parkingManager.tickets.size());
+				Grocery grocery = getFruit(s);
+				if(grocery != null) {
+					out.println(grocery);
+					groceryManager.add(grocery);
+					System.out.println("Frutta inserita " + groceryManager.groceries.size());
 				}else{
-					String plate = getPlate(s);
-					if(plate != null){
-						Ticket foundTicket = parkingManager.findPlate(plate);
-						if(foundTicket != null){
-							out.println("Found at slot: " + foundTicket.slot);
+					String qt = getQt(s);
+					if(qt != null){
+						Grocery foundGrocery = groceryManager.findQt(qt);
+						if(foundGrocery != null){
+							out.println("Found qt: " + foundGrocery.qt);
 						}else{
 							out.println("Not found");
 						}
@@ -76,17 +76,17 @@ public class ClientHandler {
 		}
 	}
 
-	private Ticket getTicket(String s){
+	private Grocery getFruit(String s){
 		Gson gson = new Gson();
 
-		Ticket ticket = null;
+		Grocery grocery = null;
 		try {
-			ticket = gson.fromJson(s, Ticket.class);
-			System.out.println(ticket);
-			if(ticket.plate == null){
+			grocery = gson.fromJson(s, Grocery.class);
+			System.out.println(grocery);
+			if(grocery.name == null){
 				return null;
 			}
-			return ticket;
+			return grocery;
 		} catch(JsonSyntaxException e) {
 			throw new RuntimeException(e);
 
@@ -96,15 +96,16 @@ public class ClientHandler {
 
 
 	}
-	private String getPlate(String s){
+	private String getQt(String s){
 		Gson gson = new Gson();
 		try{
 			FindCommand findCommand = gson.fromJson(s, FindCommand.class);
-			Ticket ticket = parkingManager.findPlate(findCommand.plateToFind);
-			if(ticket == null){
+			System.out.println(findCommand.fruitToFind);
+			Grocery grocery = groceryManager.findQt(findCommand.fruitToFind);
+			if(grocery == null){
 				return null;
 			}
-			return ticket.plate;
+			return grocery.name;
 		}catch(JsonSyntaxException e){
 			throw new RuntimeException(e);
 		}
